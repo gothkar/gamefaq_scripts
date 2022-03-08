@@ -44,15 +44,8 @@ fi
     sleep $WAIT_TIME
 
     # Extract number of pages of games
-    # Note: Pages are not consistent, 'pinball' has a dropdown page selector ("<option value"), but 'pet' does not.
-    #maxpage=$(cat $WD/games0.html | grep "<option value" | tail -1 | grep -o '".*"' | sed 's/"//g') # try to parse dropdown
-    maxpage=$(cat $WD/games0.html | grep "<option value" | tail -1 | grep -o '".*"' | sed 's/"//g') # try to parse dropdown
-    if [[ -z "$maxpage" ]];
-    then
-        # try to parse other page format
-        maxpage=$(cat $WD/games0.html | grep ' of [[:digit:]]\+</li>' | sed 's/.*\([[:digit:]]\+\).\+/\1/')
-    fi
-    if [[ -z "$maxpage" ]]; then maxpage=0; fi # give up
+    maxpage=$(cat $WD/games0.html | grep ' of [[:digit:]]\+</li>' | sed 's/.*\([[:digit:]]\+\).\+/\1/')
+    if [[ -z "$maxpage" ]]; then maxpage=0; fi
     $VERBOSE && echo "Number of pages: $maxpage"
 
     # Extract game links from first page
@@ -99,8 +92,8 @@ fi
     # - Example saved filename: output/3do/314778-the-11th-hour_6221.txt
     # - The system (3do) is just a label; The same FAQ content may be found labelled with each system for which it is valid.
     #   ...this means if you scrape multiple systems, the same content may be downloaded more than once
-    # - The first number (314778) uniquely identifies the game. Regex to extract from filename: /^(\d+)/
-    # - The second number (6221) uniquely identifies the FAQ document. Regex to extract from filename: /(\d+)\.txt$/
+    # - The first number (314778) uniquely identifies the game.
+    # - The second number (6221) uniquely identifies the FAQ document.
     cat $FAQ_LINKS | while read line
     do
         $LIVE && rm -f $WD/faq.html && wget -O $WD/faq.html "$line"
