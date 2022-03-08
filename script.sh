@@ -1,14 +1,42 @@
 #!/bin/bash
 set -eu
 IFS=$'\n\t'
+#set -vx
 
-#set -vx # Uncomment for debug
-
+######################################################################
 # Script to download all FAQs from gamefaqs.com
+######################################################################
+
+# INSTRUCTIONS
+#   1. Run this script, it will ask you for the name of a system.
+#      The system must be a valid one from the file `system_list.txt`
+#      ...which comes from https://gamefaqs.gamespot.com/games/systems
+#
+#   2. The script will fetch pages from gamefaqs.gamespot.com and save
+#      FAQ text files in the `output` directory.
+#
+# WARNING
+#   - Be aware that Gamespot monitors HTTP requests, and will block
+#     your IP if you go over their threshold (which will happen within
+#     1-2 days with the default configuration of 2 seconds wait time).
+#   - It should be possible to adjust the WAIT_TIME variable below
+#     to a higher number in order to keep below their threshold.
+#   - Luckily the script halts when it gets blocked and can't download
+#     files anymore, which gives you a chance to visit the site in a
+#     browser and get it unblocked before your IP is permanently banned.
+#
+# CREDITS
+# - prograc, for initial idea and implementation
+# - randmr, for some improvements (March 2022)
+#
+# REFERENCES
+# - https://www.reddit.com/r/DataHoarder/comments/ftsdbs/gamespot_txt_gamefaqs_full_archive_32320/
+# - https://github.com/gothkar/gamefaq_scripts
+######################################################################
 
 HOST="https://gamefaqs.gamespot.com"
 
-WAIT_TIME=2
+WAIT_TIME=2  # Number of seconds to wait after each HTTP request
 LIVE=true    # false will prevent live http calls
 CLEANUP=true # false will prevent cleanup of temporary files
 VERBOSE=true # true will display useful debug output
@@ -30,6 +58,8 @@ else
     cat $WD/systems.html | grep 'href' | sed 's#.\+href="/\([^"]\+\)".\+#\1#' | grep -Ev '^(user|games|a/|new|http)' | grep -v '<' | sort | uniq > $SYSTEM_LIST
     $VERBOSE && echo "Parsed systems: " $(cat $SYSTEM_LIST | wc -l)
 fi
+
+# Ask user for system
 
 # Loop over systems
 #cat $SYSTEM_LIST | head -1 | while read line # TODO: replace this
