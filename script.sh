@@ -16,8 +16,8 @@ IFS=$'\n\t'
 #
 # WARNING
 #   - Be aware that Gamespot monitors HTTP requests, and will block
-#     your IP if you go over their threshold (which will happen within
-#     1-2 days with the default configuration of 2 seconds wait time).
+#     your IP if you go over their threshold (Which will happen within
+#     1-2 days using a wait time of 2 seconds. Try higher values).
 #   - It should be possible to adjust the WAIT_TIME variable below
 #     to a higher number in order to keep below their threshold.
 #   - Luckily the script halts when it gets blocked and can't download
@@ -45,7 +45,7 @@ IFS=$'\n\t'
 
 HOST="https://gamefaqs.gamespot.com"
 
-WAIT_TIME=2  # Number of seconds to wait after each HTTP request
+WAIT_TIME=5  # Number of seconds to wait after each HTTP request
 LIVE=true    # false will prevent live http calls
 CLEANUP=true # false will prevent cleanup of temporary files
 VERBOSE=true # true will display useful debug output
